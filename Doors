@@ -1,0 +1,189 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local Window = Fluent:CreateWindow({
+    Title = "Doors",
+    SubTitle = "by Am.lola",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Dark"
+})
+
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "home" }),
+    Key = Window:AddTab({ Title = "Key", Icon = "key" }),
+    Other = Window:AddTab({ Title = "Other", Icon = "more-horizontal" }),
+    Misc = Window:AddTab({ Title = "Misc", Icon = "settings" })
+}
+
+Tabs.Main:AddButton({
+    Title = "Skip Room",
+    Description = "Skips the current room",
+    Callback = function()
+        pcall(function()
+            local character = game.Players.LocalPlayer.Character
+            local currentRoom = game:GetService("ReplicatedStorage").GameData.LatestRoom.Value
+            local nextRoomCenter = game:GetService("Workspace").CurrentRooms[tostring(currentRoom + 1)]:WaitForChild("RoomStart").Position
+            character:MoveTo(nextRoomCenter)
+        end)
+    end
+})
+
+Tabs.Main:AddToggle({
+    Title = "Auto Sprint",
+    Description = "Automatically enables sprinting",
+    Default = false,
+    Callback = function(Value)
+        getgenv().AutoSprint = Value
+        while getgenv().AutoSprint do
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 21
+            wait(0.1)
+        end
+    end
+})
+
+Tabs.Main:AddButton({
+    Title = "Full Bright",
+    Description = "Removes darkness",
+    Callback = function()
+        game:GetService("Lighting").Brightness = 2
+        game:GetService("Lighting").ClockTime = 14
+        game:GetService("Lighting").FogEnd = 100000
+        game:GetService("Lighting").GlobalShadows = false
+    end
+})
+
+Tabs.Main:AddToggle({
+    Title = "Entity ESP",
+    Description = "Shows entities through walls",
+    Default = false,
+    Callback = function(Value)
+        getgenv().EntityESP = Value
+        while getgenv().EntityESP do
+            for _, v in pairs(workspace:GetChildren()) do
+                if v.Name == "RushMoving" or v.Name == "AmbushMoving" then
+                    if not v:FindFirstChild("Highlight") then
+                        local highlight = Instance.new("Highlight")
+                        highlight.Parent = v
+                        highlight.FillColor = Color3.fromRGB(255, 0, 0)
+                        highlight.OutlineColor = Color3.fromRGB(255, 0, 0)
+                    end
+                end
+            end
+            wait(0.1)
+        end
+    end
+})
+
+Tabs.Main:AddButton({
+    Title = "Remove Door Locks",
+    Description = "Removes all door locks in current room",
+    Callback = function()
+        local currentRoom = game:GetService("ReplicatedStorage").GameData.LatestRoom.Value
+        local room = game:GetService("Workspace").CurrentRooms[tostring(currentRoom)]
+        for _, v in pairs(room:GetDescendants()) do
+            if v.Name == "Lock" then
+                v:Destroy()
+            end
+        end
+    end
+})
+
+Tabs.Main:AddToggle({
+    Title = "Anti Monster",
+    Description = "Teleports you away from entities",
+    Default = false,
+    Callback = function(Value)
+        getgenv().AntiMonster = Value
+        local originalPos = nil
+        
+        while getgenv().AntiMonster do
+            local player = game.Players.LocalPlayer
+            local character = player.Character
+            if character then
+                local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                if humanoidRootPart then
+                    local currentRoom = game:GetService("ReplicatedStorage").GameData.LatestRoom.Value
+                    local room = game:GetService("Workspace").CurrentRooms[tostring(currentRoom)]
+                    
+                    local entityNearby = false
+                    for _, v in pairs(workspace:GetChildren()) do
+                        if (v.Name == "RushMoving" or v.Name == "AmbushMoving") and v:FindFirstChild("HumanoidRootPart") then
+                            local distance = (v.HumanoidRootPart.Position - humanoidRootPart.Position).Magnitude
+                            if distance < 50 then
+                                entityNearby = true
+                                if not originalPos then
+                                    originalPos = humanoidRootPart.CFrame
+                                end
+                                -- Teleport high in the air
+                                humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position + Vector3.new(0, 100, 0))
+                            end
+                        end
+                    end
+                    
+                    if not entityNearby and originalPos then
+                        humanoidRootPart.CFrame = originalPos
+                        originalPos = nil
+                    end
+                end
+            end
+            wait(0.1)
+        end
+    end
+})
+
+Tabs.Key:AddToggle({
+    Title = "Key ESP",
+    Description = "Highlights keys in rooms",
+    Default = false,
+    Callback = function(Value)
+        getgenv().KeyESP = Value
+        
+        while getgenv().KeyESP do
+            local currentRoom = game:GetService("ReplicatedStorage").GameData.LatestRoom.Value
+            local room = game:GetService("Workspace").CurrentRooms[tostring(currentRoom)]
+            
+            if room then
+                local key = room:FindFirstChild("KeyObtain", true)
+                if key then
+                    -- Create or update highlight
+                    local highlight = key:FindFirstChild("Highlight") or Instance.new("Highlight")
+                    highlight.Name = "Highlight"
+                    highlight.FillColor = Color3.fromRGB(255, 255, 0)
+                    highlight.OutlineColor = Color3.fromRGB(255, 165, 0)
+                    highlight.FillTransparency = 0.5
+                    highlight.OutlineTransparency = 0
+                    highlight.Parent = key
+                end
+            end
+            
+            wait(0.1)
+        end
+        
+        -- Clean up highlights when toggled off
+        for _, room in pairs(game:GetService("Workspace").CurrentRooms:GetChildren()) do
+            local key = room:FindFirstChild("KeyObtain", true)
+            if key and key:FindFirstChild("Highlight") then
+                key.Highlight:Destroy()
+            end
+        end
+    end
+})
+
+Tabs.Key:AddButton({
+    Title = "Get Key",
+    Description = "Teleports you to the key in the current room",
+    Callback = function()
+        local currentRoom = game:GetService("ReplicatedStorage").GameData.LatestRoom.Value
+        local room = game:GetService("Workspace").CurrentRooms[tostring(currentRoom)]
+        
+        if room then
+            local key = room:FindFirstChild("KeyObtain", true)
+            if key then
+                local humanoidRootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if humanoidRootPart then
+                    humanoidRootPart.CFrame = key.CFrame
+                end
+            end
+        end
+    end
+})
