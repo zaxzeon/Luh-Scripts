@@ -229,7 +229,9 @@ end)
 
   energyBall:Destroy()
   purpleAura:Destroy()
-  purpleAuraBody:Destroy()    end
+  purpleAuraBody:Destroy()  
+
+     end
 end
 
 --[[END OF MOVE 1 ANIM]]
