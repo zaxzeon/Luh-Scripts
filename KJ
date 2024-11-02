@@ -164,51 +164,72 @@ delay(1.8, function()
 
 end)
 
-local purpleAura = Instance.new("ParticleEmitter")
-purpleAura.Parent = character.HumanoidRootPart
-purpleAura.Color = ColorSequence.new(Color3.fromRGB(147, 0, 255))
-purpleAura.LightEmission = 0.5
-purpleAura.Size = NumberSequence.new({
-    NumberSequenceKeypoint.new(0, 2),
-    NumberSequenceKeypoint.new(1, 0)
-})
-purpleAura.Transparency = NumberSequence.new({
-    NumberSequenceKeypoint.new(0, 0),
-    NumberSequenceKeypoint.new(1, 1)
-})
-purpleAura.Lifetime = NumberRange.new(0.5)
-purpleAura.Rate = 50
-purpleAura.Speed = NumberRange.new(2)
-purpleAura.SpreadAngle = Vector2.new(180, 180)
+  local purpleAura = Instance.new("ParticleEmitter")
+  purpleAura.Parent = character.Head
+  purpleAura.Parent = character.UpperTorso
+  purpleAura.Parent = character.LowerTorso
+  purpleAura.Parent = character.LeftArm
+  purpleAura.Parent = character.RightArm
+  purpleAura.Parent = character.LeftLeg
+  purpleAura.Parent = character.RightLegpurpleAura.Color = ColorSequence.new(Color3.fromRGB(147, 0, 255))
+  purpleAura.LightEmission = 0.5
+  purpleAura.Size = NumberSequence.new({
+      NumberSequenceKeypoint.new(0, 5),
+      NumberSequenceKeypoint.new(1, 0)
+  })
+  purpleAura.Transparency = NumberSequence.new({
+      NumberSequenceKeypoint.new(0, 0),
+      NumberSequenceKeypoint.new(1, 1)
+  })
+  purpleAura.Lifetime = NumberRange.new(1)
+  purpleAura.Rate = 100
+  purpleAura.Speed = NumberRange.new(5)
+  purpleAura.SpreadAngle = Vector2.new(180, 180)
 
-wait(1)
+  local purpleAuraBody = Instance.new("ParticleEmitter")
+  purpleAuraBody.Parent = character.UpperTorso
+  purpleAuraBody.Color = ColorSequence.new(Color3.fromRGB(147, 0, 255))
+  purpleAuraBody.LightEmission = 0.5
+  purpleAuraBody.Size = NumberSequence.new({
+      NumberSequenceKeypoint.new(0, 5),
+      NumberSequenceKeypoint.new(1, 0)
+  })
+  purpleAuraBody.Transparency = NumberSequence.new({
+      NumberSequenceKeypoint.new(0, 0),
+      NumberSequenceKeypoint.new(1, 1)
+  })
+  purpleAuraBody.Lifetime = NumberRange.new(1)
+  purpleAuraBody.Rate = 100
+  purpleAuraBody.Speed = NumberRange.new(5)
+  purpleAuraBody.SpreadAngle = Vector2.new(180, 180)
 
-purpleAura.Enabled = false
+  wait(1)
 
-local energyBall = Instance.new("Part")
-energyBall.Parent = character.LeftLeg
-energyBall.Shape = Enum.PartType.Ball
-energyBall.Size = Vector3.new(1, 1, 1)
-energyBall.Material = Enum.Material.Neon
-energyBall.BrickColor = BrickColor.new("Royal purple")
-energyBall.CanCollide = false
-energyBall.Anchored = true
-energyBall.Transparency = 0.3
+  purpleAura.Enabled = false
+  purpleAuraBody.Enabled = false
 
-local expandTween = game:GetService("TweenService"):Create(energyBall, 
-    TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-    {Size = Vector3.new(10, 10, 10), Transparency = 1}
-)
+  local energyBall = Instance.new("Part")
+  energyBall.Parent = character.LeftLeg
+  energyBall.Shape = Enum.PartType.Ball
+  energyBall.Size = Vector3.new(2, 2, 2)
+  energyBall.Material = Enum.Material.Neon
+  energyBall.BrickColor = BrickColor.new("Royal purple")
+  energyBall.CanCollide = false
+  energyBall.Anchored = true
+  energyBall.Transparency = 0.3
 
-expandTween:Play()
+  local expandTween = game:GetService("TweenService"):Create(energyBall, 
+      TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+      {Size = Vector3.new(20, 20, 20), Transparency = 1}
+  )
 
-wait(0.8)
+  expandTween:Play()
 
-energyBall:Destroy()
-purpleAura:Destroy()
+  wait(0.8)
 
-    end
-
+  energyBall:Destroy()
+  purpleAura:Destroy()
+  purpleAuraBody:Destroy()    end
 end
 
 --[[END OF MOVE 1 ANIM]]
