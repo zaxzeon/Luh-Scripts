@@ -164,6 +164,49 @@ delay(1.8, function()
 
 end)
 
+local purpleAura = Instance.new("ParticleEmitter")
+purpleAura.Parent = character.HumanoidRootPart
+purpleAura.Color = ColorSequence.new(Color3.fromRGB(147, 0, 255))
+purpleAura.LightEmission = 0.5
+purpleAura.Size = NumberSequence.new({
+    NumberSequenceKeypoint.new(0, 2),
+    NumberSequenceKeypoint.new(1, 0)
+})
+purpleAura.Transparency = NumberSequence.new({
+    NumberSequenceKeypoint.new(0, 0),
+    NumberSequenceKeypoint.new(1, 1)
+})
+purpleAura.Lifetime = NumberRange.new(0.5)
+purpleAura.Rate = 50
+purpleAura.Speed = NumberRange.new(2)
+purpleAura.SpreadAngle = Vector2.new(180, 180)
+
+wait(1)
+
+purpleAura.Enabled = false
+
+local energyBall = Instance.new("Part")
+energyBall.Parent = character.LeftLeg
+energyBall.Shape = Enum.PartType.Ball
+energyBall.Size = Vector3.new(1, 1, 1)
+energyBall.Material = Enum.Material.Neon
+energyBall.BrickColor = BrickColor.new("Royal purple")
+energyBall.CanCollide = false
+energyBall.Anchored = true
+energyBall.Transparency = 0.3
+
+local expandTween = game:GetService("TweenService"):Create(energyBall, 
+    TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+    {Size = Vector3.new(10, 10, 10), Transparency = 1}
+)
+
+expandTween:Play()
+
+wait(0.8)
+
+energyBall:Destroy()
+purpleAura:Destroy()
+
     end
 
 end
