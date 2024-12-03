@@ -164,19 +164,27 @@ delay(1.8, function()
 
 end)
 
-local Test = game:GetService("ReplicatedStorage").Resources.AcidExplosion.AcidExplosion["1"]
+local Test = game:GetService("ReplicatedStorage").Resources.AtomicSlash.Begin3.Begin.Attachment
 local test = Test:Clone()
 test.Parent = game.Players.LocalPlayer.Character["HumanoidRootPart"]
 
 
 for _, child in ipairs(test:GetChildren()) do
-    if child:IsA("ParticleEmitter") then
-        
-        child.Color = ColorSequence.new(Color3.new(0, 255, 255))
-        child:Emit(15)
-        child.Enabled = true
-    end
+        if child:IsA("ParticleEmitter") then
+            child.Color = ColorSequence.new(Color3.new(255, 255, 255))
+            child:Emit(15)
+            child.Enabled = true
+        end
 end
+
+delay(2, function()
+        for _, child in ipairs(test:GetChildren()) do
+            if child:IsA("ParticleEmitter") then
+                child.Enabled = false
+            end
+        end
+        test:Destroy()
+end)
 
     end
 
@@ -337,37 +345,64 @@ delay(1.8, function()
     Anim:Stop()
 
 end)
+  -- Create the circle effect
+  local circle = Instance.new("Part")
+  circle.Shape = Enum.PartType.Cylinder
+  circle.Size = Vector3.new(0.5, 1, 1)
+  circle.CFrame = character.HumanoidRootPart.CFrame * CFrame.new(0, -2, 0) * CFrame.Angles(0, 0, math.rad(90))
+  circle.Anchored = true
+  circle.CanCollide = false
+  circle.Material = Enum.Material.Neon
+  circle.Transparency = 0.5
+  circle.Parent = workspace
 
--- Create the circle effect
-local circle = Instance.new("Part")
-circle.Shape = Enum.PartType.Cylinder
-circle.Size = Vector3.new(0.5, 1, 1)
-circle.CFrame = character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, math.rad(90))
-circle.Anchored = true
-circle.CanCollide = false
-circle.Material = Enum.Material.Neon
-circle.Transparency = 0.5
-circle.Parent = workspace
+  -- Animate the circle
+  local tweenService = game:GetService("TweenService")
+  local tweenInfo = TweenInfo.new(
+      1, -- Time
+      Enum.EasingStyle.Quad,
+      Enum.EasingDirection.Out
+  )
 
--- Animate the circle
-local tweenService = game:GetService("TweenService")
-local tweenInfo = TweenInfo.new(
-    1, -- Time
-    Enum.EasingStyle.Quad,
-    Enum.EasingDirection.Out
-)
+  local properties = {
+      Size = Vector3.new(0.5, 50, 50),
+      Transparency = 1
+  }
 
-local properties = {
-    Size = Vector3.new(0.5, 50, 50),
-    Transparency = 1
-}
+  local tween = tweenService:Create(circle, tweenInfo, properties)
+  tween:Play()
 
-local tween = tweenService:Create(circle, tweenInfo, properties)
-tween:Play()
+  -- Create water drop effect after circle animation
+  tween.Completed:Connect(function()
+      for i = 1, 10 do
+          local drop = Instance.new("Part")
+          drop.Shape = Enum.PartType.Ball
+          drop.Size = Vector3.new(0.2, 0.2, 0.2)
+          drop.CFrame = character.HumanoidRootPart.CFrame * CFrame.new(math.random(-0.5, 0.5), -2, math.random(-0.5, 0.5))
+          drop.Anchored = true
+          drop.CanCollide = false
+          drop.Material = Enum.Material.Glass
+          drop.Color = Color3.new(1, 1, 1)
+          drop.Transparency = 0
+          drop.Parent = workspace
 
--- Clean up
-game:GetService("Debris"):AddItem(circle, 2)
+          local dropTween = tweenService:Create(drop, TweenInfo.new(
+              1,
+              Enum.EasingStyle.Linear,
+              Enum.EasingDirection.Out
+          ), {
+              CFrame = drop.CFrame * CFrame.new(0, -3, 0),
+              Transparency = 1
+          })
+        
+          dropTween:Play()
+          game:GetService("Debris"):AddItem(drop, 1)
+          task.wait(0.2)
+      end
+  end)
 
+  -- Clean up
+  game:GetService("Debris"):AddItem(circle, 2)
 
     end
 
