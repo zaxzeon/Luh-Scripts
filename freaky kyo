@@ -169,6 +169,31 @@ local test = Test:Clone()
 test.Parent = game.Players.LocalPlayer.Character["HumanoidRootPart"]
 
 
+local bubble = Instance.new("BillboardGui")
+bubble.Name = "ChatBubble"
+bubble.Size = UDim2.new(0, 150, 0, 50)
+bubble.StudsOffset = Vector3.new(3, 0, 0)
+bubble.Parent = game.Players.LocalPlayer.Character.Head
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(1, 0, 1, 0)
+frame.BackgroundColor3 = Color3.new(1, 1, 1)
+frame.BorderSizePixel = 0
+frame.Parent = bubble
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0.3, 0)
+corner.Parent = frame
+
+local text = Instance.new("TextLabel")
+text.Text = "Feel my Cum.."
+text.Size = UDim2.new(1, 0, 1, 0)
+text.BackgroundTransparency = 1
+text.TextColor3 = Color3.new(0, 0, 0)
+text.Font = Enum.Font.GothamBold
+text.TextScaled = true
+text.Parent = frame
+
 for _, child in ipairs(test:GetChildren()) do
         if child:IsA("ParticleEmitter") then
             child.Color = ColorSequence.new(Color3.new(255, 255, 255))
@@ -184,8 +209,8 @@ delay(2, function()
             end
         end
         test:Destroy()
+        bubble:Destroy()
 end)
-
     end
 
 end
@@ -348,62 +373,61 @@ end)
   -- Create the circle effect
   local circle = Instance.new("Part")
   circle.Shape = Enum.PartType.Cylinder
-  circle.Size = Vector3.new(0.5, 1, 1)
-  circle.CFrame = character.HumanoidRootPart.CFrame * CFrame.new(0, -2, 0) * CFrame.Angles(0, 0, math.rad(90))
+  circle.Size = Vector3.new(0.2, 1, 1)
+  circle.CFrame = character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -2) * CFrame.Angles(math.rad(90), 0, 0)
   circle.Anchored = true
   circle.CanCollide = false
-  circle.Material = Enum.Material.Neon
-  circle.Transparency = 0.5
+  circle.Material = Enum.Material.SmoothPlastic
+  circle.Color = Color3.fromRGB(0, 255, 127)
+  circle.Transparency = 0.2
   circle.Parent = workspace
 
   -- Animate the circle
   local tweenService = game:GetService("TweenService")
   local tweenInfo = TweenInfo.new(
       1, -- Time
-      Enum.EasingStyle.Quad,
+      Enum.EasingStyle.Sine,
       Enum.EasingDirection.Out
   )
 
   local properties = {
-      Size = Vector3.new(0.5, 50, 50),
-      Transparency = 1
+      Size = Vector3.new(0.2, 20, 20),
+      Transparency = 1,
+      Color = Color3.fromRGB(0, 200, 100)
   }
+
+  -- Create slime drips
+  for i = 1, 8 do
+      local drip = Instance.new("Part")
+      drip.Shape = Enum.PartType.Ball
+      drip.Size = Vector3.new(0.3, 0.8, 0.3)
+      drip.CFrame = circle.CFrame * CFrame.new(math.random(-1, 1), 0, math.random(-1, 1))
+      drip.Anchored = true
+      drip.CanCollide = false
+      drip.Material = Enum.Material.Glass
+      drip.Color = Color3.fromRGB(0, 255, 127)
+      drip.Transparency = 0.2
+      drip.Parent = workspace
+
+      local dripTween = tweenService:Create(drip, TweenInfo.new(
+          1.2,
+          Enum.EasingStyle.Cubic,
+          Enum.EasingDirection.Out
+      ), {
+          Size = Vector3.new(0.1, 0.1, 0.1),
+          Transparency = 1,
+          CFrame = drip.CFrame * CFrame.new(0, -2, 0)
+      })
+      
+      dripTween:Play()
+      game:GetService("Debris"):AddItem(drip, 1.2)
+  end
 
   local tween = tweenService:Create(circle, tweenInfo, properties)
   tween:Play()
 
-  -- Create water drop effect after circle animation
-  tween.Completed:Connect(function()
-      for i = 1, 10 do
-          local drop = Instance.new("Part")
-          drop.Shape = Enum.PartType.Ball
-          drop.Size = Vector3.new(0.2, 0.2, 0.2)
-          drop.CFrame = character.HumanoidRootPart.CFrame * CFrame.new(math.random(-0.5, 0.5), -2, math.random(-0.5, 0.5))
-          drop.Anchored = true
-          drop.CanCollide = false
-          drop.Material = Enum.Material.Glass
-          drop.Color = Color3.new(1, 1, 1)
-          drop.Transparency = 0
-          drop.Parent = workspace
-
-          local dropTween = tweenService:Create(drop, TweenInfo.new(
-              1,
-              Enum.EasingStyle.Linear,
-              Enum.EasingDirection.Out
-          ), {
-              CFrame = drop.CFrame * CFrame.new(0, -3, 0),
-              Transparency = 1
-          })
-        
-          dropTween:Play()
-          game:GetService("Debris"):AddItem(drop, 1)
-          task.wait(0.2)
-      end
-  end)
-
   -- Clean up
-  game:GetService("Debris"):AddItem(circle, 2)
-
+  game:GetService("Debris"):AddItem(circle, 1)
     end
 
 end
