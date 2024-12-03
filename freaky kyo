@@ -431,32 +431,24 @@ delay(1.8, function()
     Anim:Stop()
 
 end)
-delay(0.8, function()
-    local rightLeg = character:WaitForChild("RightLeg")
-    local circle = Instance.new("Part")
-    circle.Shape = Enum.PartType.Ball
-    circle.Size = Vector3.new(1, 1, 1)
-    circle.Transparency = 0.5
-    circle.CanCollide = false
-    circle.Anchored = true
-    circle.Parent = workspace
-    
-    local attachment = Instance.new("Attachment")
-    attachment.Parent = rightLeg
-    
-    circle.CFrame = rightLeg.CFrame
-    
-    local tween = game:GetService("TweenService"):Create(circle, TweenInfo.new(1), {
-        Size = Vector3.new(5, 5, 5),
-        Transparency = 1
-    })
-    
-    tween:Play()
-    
-    game:GetService("Debris"):AddItem(circle, 1)
-    game:GetService("Debris"):AddItem(attachment, 1)
-end)
 
+local Test = game:GetService("ReplicatedStorage").Resources.AcidExplosion.AcidExplosion["1"]
+local test = Test:Clone()
+test.Parent = game.Players.LocalPlayer.Character["HumanoidRootPart"]
+
+
+for _, child in ipairs(test:GetChildren()) do
+    if child:IsA("ParticleEmitter") then
+        
+        child.Color = ColorSequence.new(Color3.new(1, 1, 1))
+        child:Emit(15)
+        child.Enabled = true
+    end
+end
+
+delay(3, function()
+    test:Destroy()
+end)
 
     end
 
