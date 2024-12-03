@@ -164,34 +164,49 @@ delay(1.8, function()
 
 end)
 
-local torso = character:WaitForChild("UpperTorso")
+wait(1)
 
-local splashEffect = Instance.new("ParticleEmitter")
-splashEffect.Parent = torso
-splashEffect.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255))
-splashEffect.LightEmission = 0.5
-splashEffect.LightInfluence = 0
-splashEffect.Size = NumberSequence.new({
-    NumberSequenceKeypoint.new(0, 0.5),
-    NumberSequenceKeypoint.new(0.5, 2),
+local torso = character:WaitForChild("UpperTorso")
+local splash = Instance.new("ParticleEmitter")
+splash.Parent = torso
+splash.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255))
+splash.LightEmission = 0.5
+splash.LightInfluence = 0
+splash.Size = NumberSequence.new({
+    NumberSequenceKeypoint.new(0, 2),
     NumberSequenceKeypoint.new(1, 0)
 })
-splashEffect.Transparency = NumberSequence.new({
+splash.Texture = "rbxasset://textures/particles/splash_001.png"
+splash.Transparency = NumberSequence.new({
     NumberSequenceKeypoint.new(0, 0),
-    NumberSequenceKeypoint.new(0.7, 0.5),
     NumberSequenceKeypoint.new(1, 1)
 })
-splashEffect.Lifetime = NumberRange.new(0.5, 1)
-splashEffect.Rate = 50
-splashEffect.Speed = NumberRange.new(10, 15)
-splashEffect.SpreadAngle = Vector2.new(-45, 45)
-splashEffect.Acceleration = Vector3.new(0, -20, 0)
-splashEffect.Drag = 5
-splashEffect.RotSpeed = NumberRange.new(-360, 360)
-splashEffect.Shape = Enum.ParticleEmitterShape.Sphere
-splashEffect.ShapeStyle = Enum.ParticleEmitterShapeStyle.Surface
-splashEffect.Texture = "rbxasset://textures/particles/smoke_main.dds"
-splashEffect.Enabled = true
+splash.Acceleration = Vector3.new(0, -10, 0)
+splash.Lifetime = NumberRange.new(0.5, 1)
+splash.Rate = 50
+splash.Speed = NumberRange.new(10, 15)
+splash.SpreadAngle = Vector2.new(50, 50)
+
+wait(1)
+
+local rightHand = character:WaitForChild("RightHand")
+local drops = Instance.new("ParticleEmitter")
+drops.Parent = rightHand
+drops.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255))
+drops.Size = NumberSequence.new(0.3)
+drops.Texture = "rbxasset://textures/particles/sparkles_main.png"
+drops.Transparency = NumberSequence.new(0)
+drops.Lifetime = NumberRange.new(0.5)
+drops.Rate = 20
+drops.Speed = NumberRange.new(3, 5)
+drops.SpreadAngle = Vector2.new(15, 15)
+
+wait(2)
+drops.Enabled = false
+splash.Enabled = false
+
+game.Debris:AddItem(drops, 1)
+game.Debris:AddItem(splash, 1)
 
 
     end
@@ -235,7 +250,7 @@ end
 
 local AnimAnim = Instance.new("Animation")
 
-AnimAnim.AnimationId = "rbxassetid://18181589384"
+AnimAnim.AnimationId = "rbxassetid://12460977270"
 
 local Anim = Humanoid:LoadAnimation(AnimAnim)
 
@@ -257,6 +272,37 @@ delay(1.8, function()
     Anim:Stop()
 
 end)
+
+-- Create VFX circles
+local function createCircle()
+    local circle = Instance.new("Part")
+    circle.Shape = Enum.PartType.Ball
+    circle.Size = Vector3.new(1, 1, 1)
+    circle.Material = Enum.Material.Neon
+    circle.Transparency = 0.5
+    circle.Anchored = true
+    circle.CanCollide = false
+    circle.Parent = workspace
+    
+    -- Position circle in front of player
+    local hrp = character:WaitForChild("HumanoidRootPart")
+    circle.CFrame = hrp.CFrame * CFrame.new(0, 0, -3)
+    
+    -- Expand and fade effect
+    local expandTween = game:GetService("TweenService"):Create(circle, 
+        TweenInfo.new(0.5), 
+        {Size = Vector3.new(5, 5, 5), Transparency = 1}
+    )
+    expandTween:Play()
+    
+    -- Clean up after effect
+    game:GetService("Debris"):AddItem(circle, 0.5)
+end
+
+-- Spawn multiple circles rapidly
+for i = 1, 40 do
+    delay(i * 0.05, createCircle)
+end
 
 
     end
@@ -300,7 +346,7 @@ end
 
 local AnimAnim = Instance.new("Animation")
 
-AnimAnim.AnimationId = "rbxassetid://17420452843"
+AnimAnim.AnimationId = "rbxassetid://12463072679"
 
 local Anim = Humanoid:LoadAnimation(AnimAnim)
 
@@ -322,6 +368,36 @@ delay(1.8, function()
     Anim:Stop()
 
 end)
+
+-- Create the circle effect
+local circle = Instance.new("Part")
+circle.Shape = Enum.PartType.Cylinder
+circle.Size = Vector3.new(0.5, 1, 1)
+circle.CFrame = character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, math.rad(90))
+circle.Anchored = true
+circle.CanCollide = false
+circle.Material = Enum.Material.Neon
+circle.Transparency = 0.5
+circle.Parent = workspace
+
+-- Animate the circle
+local tweenService = game:GetService("TweenService")
+local tweenInfo = TweenInfo.new(
+    1, -- Time
+    Enum.EasingStyle.Quad,
+    Enum.EasingDirection.Out
+)
+
+local properties = {
+    Size = Vector3.new(0.5, 50, 50),
+    Transparency = 1
+}
+
+local tween = tweenService:Create(circle, tweenInfo, properties)
+tween:Play()
+
+-- Clean up
+game:GetService("Debris"):AddItem(circle, 2)
 
 
     end
@@ -364,7 +440,7 @@ end
 
 local AnimAnim = Instance.new("Animation")
 
-AnimAnim.AnimationId = "rbxassetid://16515850153"
+AnimAnim.AnimationId = "rbxassetid://18179181663"
 
 local Anim = Humanoid:LoadAnimation(AnimAnim)
 
@@ -385,6 +461,31 @@ delay(1.8, function()
 
     Anim:Stop()
 
+end)
+delay(0.8, function()
+    local rightLeg = character:WaitForChild("RightLeg")
+    local circle = Instance.new("Part")
+    circle.Shape = Enum.PartType.Ball
+    circle.Size = Vector3.new(1, 1, 1)
+    circle.Transparency = 0.5
+    circle.CanCollide = false
+    circle.Anchored = true
+    circle.Parent = workspace
+    
+    local attachment = Instance.new("Attachment")
+    attachment.Parent = rightLeg
+    
+    circle.CFrame = rightLeg.CFrame
+    
+    local tween = game:GetService("TweenService"):Create(circle, TweenInfo.new(1), {
+        Size = Vector3.new(5, 5, 5),
+        Transparency = 1
+    })
+    
+    tween:Play()
+    
+    game:GetService("Debris"):AddItem(circle, 1)
+    game:GetService("Debris"):AddItem(attachment, 1)
 end)
 
 
@@ -1163,25 +1264,3 @@ onHumanoidChanged()
 
 --[[RUN ANIM END]]
 
---[[Execute Anims (Animations when you execute script]]
-
-local p = game.Players.LocalPlayer
-local Humanoid = p.Character:WaitForChild("Humanoid")
-
-for _, animTrack in pairs(Humanoid:GetPlayingAnimationTracks()) do
-    animTrack:Stop()
-end
-
-local AnimAnim = Instance.new("Animation")
-AnimAnim.AnimationId = "rbxassetid://14611879113" -- Replace with your animation ID
-
-local Anim = Humanoid:LoadAnimation(AnimAnim)
-
-local startTime = 0.05
-
-Anim:Play()
-Anim:AdjustSpeed(0)
-Anim.TimePosition = startTime
-Anim:AdjustSpeed(1)
-
---[[END OF EXECUTE ANIMS]]
