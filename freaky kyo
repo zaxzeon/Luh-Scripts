@@ -374,11 +374,11 @@ end)
   local circle = Instance.new("Part")
   circle.Shape = Enum.PartType.Cylinder
   circle.Size = Vector3.new(0.2, 1, 1)
-  circle.CFrame = character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -2) * CFrame.Angles(math.rad(90), 0, 0)
+  circle.CFrame = character:WaitForChild("RightLeg").CFrame * CFrame.new(0, -1, 0) * CFrame.Angles(math.rad(90), 0, 0)
   circle.Anchored = true
   circle.CanCollide = false
   circle.Material = Enum.Material.SmoothPlastic
-  circle.Color = Color3.fromRGB(0, 255, 127)
+  circle.Color = Color3.fromRGB(255, 255, 255)
   circle.Transparency = 0.2
   circle.Parent = workspace
 
@@ -393,7 +393,7 @@ end)
   local properties = {
       Size = Vector3.new(0.2, 20, 20),
       Transparency = 1,
-      Color = Color3.fromRGB(0, 200, 100)
+      Color = Color3.fromRGB(255, 255, 255)
   }
 
   -- Create slime drips
@@ -401,11 +401,11 @@ end)
       local drip = Instance.new("Part")
       drip.Shape = Enum.PartType.Ball
       drip.Size = Vector3.new(0.3, 0.8, 0.3)
-      drip.CFrame = circle.CFrame * CFrame.new(math.random(-1, 1), 0, math.random(-1, 1))
+      drip.CFrame = character.RightLeg.CFrame * CFrame.new(math.random(-1, 1), -1, math.random(-1, 1))
       drip.Anchored = true
       drip.CanCollide = false
       drip.Material = Enum.Material.Glass
-      drip.Color = Color3.fromRGB(0, 255, 127)
+      drip.Color = Color3.fromRGB(255, 255, 255)
       drip.Transparency = 0.2
       drip.Parent = workspace
 
@@ -495,13 +495,17 @@ local Test = game:GetService("ReplicatedStorage").Resources.AcidExplosion.AcidEx
 local test = Test:Clone()
 test.Parent = game.Players.LocalPlayer.Character["HumanoidRootPart"]
 
-
 for _, child in ipairs(test:GetChildren()) do
     if child:IsA("ParticleEmitter") then
-        
         child.Color = ColorSequence.new(Color3.new(1, 1, 1))
         child:Emit(15)
         child.Enabled = true
+        
+        -- Add transparency transition
+        local tweenService = game:GetService("TweenService")
+        local tweenInfo = TweenInfo.new(3, Enum.EasingStyle.Linear)
+        local tween = tweenService:Create(child, tweenInfo, {Rate = 0, Transparency = NumberSequence.new(1)})
+        tween:Play()
     end
 end
 
