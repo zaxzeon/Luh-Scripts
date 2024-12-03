@@ -164,50 +164,19 @@ delay(1.8, function()
 
 end)
 
-wait(1)
+local Test = game:GetService("ReplicatedStorage").Resources.AcidExplosion.AcidExplosion["1"]
+local test = Test:Clone()
+test.Parent = game.Players.LocalPlayer.Character["HumanoidRootPart"]
 
-local torso = character:WaitForChild("UpperTorso")
-local splash = Instance.new("ParticleEmitter")
-splash.Parent = torso
-splash.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255))
-splash.LightEmission = 0.5
-splash.LightInfluence = 0
-splash.Size = NumberSequence.new({
-    NumberSequenceKeypoint.new(0, 2),
-    NumberSequenceKeypoint.new(1, 0)
-})
-splash.Texture = "rbxasset://textures/particles/splash_001.png"
-splash.Transparency = NumberSequence.new({
-    NumberSequenceKeypoint.new(0, 0),
-    NumberSequenceKeypoint.new(1, 1)
-})
-splash.Acceleration = Vector3.new(0, -10, 0)
-splash.Lifetime = NumberRange.new(0.5, 1)
-splash.Rate = 50
-splash.Speed = NumberRange.new(10, 15)
-splash.SpreadAngle = Vector2.new(50, 50)
 
-wait(1)
-
-local rightHand = character:WaitForChild("RightHand")
-local drops = Instance.new("ParticleEmitter")
-drops.Parent = rightHand
-drops.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255))
-drops.Size = NumberSequence.new(0.3)
-drops.Texture = "rbxasset://textures/particles/sparkles_main.png"
-drops.Transparency = NumberSequence.new(0)
-drops.Lifetime = NumberRange.new(0.5)
-drops.Rate = 20
-drops.Speed = NumberRange.new(3, 5)
-drops.SpreadAngle = Vector2.new(15, 15)
-
-wait(2)
-drops.Enabled = false
-splash.Enabled = false
-
-game.Debris:AddItem(drops, 1)
-game.Debris:AddItem(splash, 1)
-
+for _, child in ipairs(test:GetChildren()) do
+    if child:IsA("ParticleEmitter") then
+        
+        child.Color = ColorSequence.new(Color3.new(0, 255, 255))
+        child:Emit(15)
+        child.Enabled = true
+    end
+end
 
     end
 
