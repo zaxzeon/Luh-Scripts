@@ -1,0 +1,43 @@
+local tool = Instance.new("Tool")
+tool.Name = "20-20-20-dropkick"
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local animation = Instance.new("Animation")
+animation.AnimationId = "rbxassetid://17420452843"
+
+tool.Equipped:Connect(function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character
+    if character then
+        local humanoid = character:FindFirstChild("Humanoid")
+        if humanoid then
+            local animator = humanoid:WaitForChild("Animator")
+            local animationTrack = animator:LoadAnimation(animation)
+            animationTrack:Play()
+            
+            local flingActive = true
+            local touchConnection
+            
+            touchConnection = character.HumanoidRootPart.Touched:Connect(function(hit)
+                if flingActive then
+                    local hitPlayer = game.Players:GetPlayerFromCharacter(hit.Parent)
+                    if hitPlayer and hitPlayer ~= player then
+                        local hitHumanoid = hit.Parent:FindFirstChild("Humanoid")
+                        local hitRoot = hit.Parent:FindFirstChild("HumanoidRootPart")
+                        if hitHumanoid and hitRoot then
+                            local flingForce = Instance.new("BodyVelocity")
+                            flingForce.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                            flingForce.Velocity = character.HumanoidRootPart.CFrame.LookVector * 200
+                            flingForce.Parent = hitRoot
+                            game.Debris:AddItem(flingForce, 0.1)
+                        end
+                    end
+                end
+            end)
+            
+            task.wait(3)
+            flingActive = false
+            touchConnection:Disconnect()
+        end
+    end
+end)
